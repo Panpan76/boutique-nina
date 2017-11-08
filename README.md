@@ -12,6 +12,10 @@ Structure du projet :
 - src _(Dossier des fichiers source du développeur)_
 
 A faire :
+- [x] Autoload
+- [x] Gestion des Exceptions
+- [x] Gestion des logs
+- [x] Gestion des fichiers
 - [ ] Système d'annotations
 - [ ] Système de gestion des entités
   - [ ] Sélection
