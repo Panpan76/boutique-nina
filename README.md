@@ -3,6 +3,8 @@
 Création, découverte et utilisation d'un framework PHP
 
 --------------
+### [Documentation](docs/README.md)
+--------------
 
 Structure du projet :
 - Annotations
