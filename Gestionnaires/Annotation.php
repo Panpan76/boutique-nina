@@ -28,11 +28,39 @@ class Annotation{
   ###############
   ## Attributs ##
   ###############
-  private $annotations = array(); // Toutes les annotations sauvegardées
+  private static $annotations = array(); // Toutes les annotations sauvegardées
 
   ##############
   ## Méthodes ##
   ##############
+
+  /**
+   * Pour parser un dossier
+   *
+   * @param string $nomDossier Nom du dossier à parser
+   */
+  public function parseDossier($nomDossier){
+    foreach(glob("$nomDossier/*.php") as $fichier){
+      $this->parseFichier($fichier);
+    }
+    return self::$annotations;
+  }
+
+
+  public static function getAnnotations($element = null){
+    if(is_null($element)){
+      return self::$annotations;
+    }
+
+    $resultats = array();
+    foreach(self::$annotations as $categorie => $infos){
+      if(preg_match("/$element/", $categorie)){
+        $resultats[$categorie] = self::$annotations[$categorie];
+      }
+    }
+    return $resultats;
+  }
+
 
   /**
    * Pour parser un fichier
@@ -55,7 +83,8 @@ class Annotation{
         if(preg_match(self::REGEX_CLASSE, $str, $match)){ // Si on match la classe
           $classe = $match[1];
           if(array_key_exists('table', $annotations)){
-            $this->annotations["$namespace\\$classe"]['table'] = $annotations['table'];
+            self::$annotations["$namespace\\$classe"]['table'] = $annotations['table'];
+            unset($annotations['table']);
           }
         }
         if(preg_match(self::REGEX_ANNOTATION, $str, $match)){ // Si on match une annotation
@@ -84,7 +113,7 @@ class Annotation{
             $resultat['defaut'] = $match[4]; // S'il y a une valeur par défaut
           }
           // On le stock toutes les annotations précédentes dans la liste des attributs de la classe
-          $this->annotations["$namespace\\$classe"]['attributs'][$match[3]] = array_merge($resultat, $annotations);
+          self::$annotations["$namespace\\$classe"]['attributs'][$match[3]] = array_merge($resultat, $annotations);
           // On vide le tableau des annotations
           $annotations = array();
         }
@@ -95,14 +124,14 @@ class Annotation{
             $resultat['static'] = true; // s'il est static
           }
           // On le stock toutes les annotations précédentes dans la liste des méthodes de la classe
-          $this->annotations["$namespace\\$classe"]['methodes'][$match[3]] = array_merge($resultat, $annotations);
+          self::$annotations["$namespace\\$classe"]['methodes'][$match[3]] = array_merge($resultat, $annotations);
           // On vide le tableau des annotations
           $annotations = array();
         }
       }
       $fichier->fermer();
-      if(isset($this->annotations["$namespace\\$classe"])){
-        return $this->annotations["$namespace\\$classe"];
+      if(isset(self::$annotations["$namespace\\$classe"])){
+        return self::$annotations["$namespace\\$classe"];
       }
       return array();
     }catch(FichierException $e){}
@@ -143,7 +172,7 @@ class Annotation{
    */
   public function __toString(){
     $str = '';
-    $str .= $this->tableauVersChaine($this->annotations);
+    $str .= $this->tableauVersChaine(self::$annotations);
     return $str;
   }
 }
