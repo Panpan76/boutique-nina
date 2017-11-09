@@ -30,9 +30,41 @@ class Annotation{
   ###############
   private static $annotations = array(); // Toutes les annotations sauvegardées
 
+  private static $instance;
+
+
   ##############
   ## Méthodes ##
   ##############
+
+  /**
+   * Permet d'avoir une seule instance de la classe
+   *
+   * @see __construct()
+   *
+   * @return Gestionnaires\Annotation
+   */
+  public static function getInstance(){
+    if(is_null(self::$instance)){
+      self::$instance = new self();
+    }
+    return self::$instance;
+  }
+
+  /**
+   * Constructeur de la classe
+   */
+  public function __construct(){
+    // TODO Mettre en mémoire les annotations -> fichier
+    $this->init(); // Initialise les annotations
+  }
+
+  /**
+   * Initiliase les annotations
+   */
+  private function init(){
+    $this->parseDossier('src/Entites'); // Les entités
+  }
 
   /**
    * Pour parser un dossier
