@@ -1,4 +1,4 @@
-# FrameworkPHP _(0.1.0)_
+# FrameworkPHP _(0.2.0)_
 
 Création, découverte et utilisation d'un framework PHP
 
