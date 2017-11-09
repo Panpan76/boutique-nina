@@ -25,7 +25,7 @@ class FichierException extends Exception{
     switch($code){
       case self::CREATION_IMPOSSIBLE:
         $titre        = "Création ou overture du fichier impossible";
-        $description  = "Impossible de créer ou d'ouvrir le fichier '$nomFichier'";
+        $description  = "Impossible de créer ou d`ouvrir le fichier '$nomFichier'";
         $type         = 'E';
         break;
 
@@ -37,13 +37,13 @@ class FichierException extends Exception{
 
       case self::ECRITURE_IMPOSSIBLE:
         $titre        = "Ecriture du fichier impossible";
-        $description  = "Impossible d'écrire le fichier '$nomFichier'";
+        $description  = "Impossible d`écrire dans le fichier '$nomFichier'";
         $type         = 'E';
         break;
 
       case self::AUCUN_FICHIER_OUVERT:
         $titre        = "Le fichier n'a pas été ouvert";
-        $description  = "Avant de pouvoir effectuer l'opération demandée, il faut ouvrir le fichier $nomFichier";
+        $description  = "Avant de pouvoir effectuer l`opération demandée, il faut ouvrir le fichier $nomFichier";
         $type         = 'E';
         break;
 
