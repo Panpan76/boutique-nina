@@ -1,4 +1,4 @@
-# FrameworkPHP _(0.2.0)_
+# FrameworkPHP _(0.3.3)_
 
 Création, découverte et utilisation d'un framework PHP
 
@@ -26,11 +26,11 @@ A faire :
 - [x] Gestion des logs
 - [x] Gestion des fichiers
 - [x] Système d'annotations (par fichier)
-- [ ] Système de gestion des entités
-  - [ ] Sélection
-  - [ ] Insertion
-  - [ ] Modification
-  - [ ] Suppression
+- [x] Système de gestion des entités
+  - [x] Sélection
+  - [x] Insertion
+  - [x] Modification
+  - [x] Suppression
 - [ ] Gestion des requêtes
   - [ ] Redirection
   - [ ] Historique (pour retourner à une page précédente)
