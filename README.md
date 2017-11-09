@@ -1,13 +1,22 @@
-# FrameworkPHP _(0.0.1)_
+# FrameworkPHP _(0.1.0)_
 
 Création, découverte et utilisation d'un framework PHP
 
 --------------
 
 Structure du projet :
-- Exceptions _(Dossier contenant les classes gérant les exceptions)_
+- Annotations
+  - Annotation.php _(Classe générique analysant une annotation)_
+  - ...
+- Exceptions
   - Exception.php _(Classe mère des exceptions)_
-- Logguers _(Dossier contenant les classes gérant les logguers)_
+  - ...
+- Gestionnaires
+  - Annotation.php  _(Gestionnaire d'annotations)_
+  - Fichier.php _(Gestionnaire de fichiers)_
+- Interfaces
+  - Analysable.php
+- Logguers
   - Logguer.php _(Classe du logguer)_
 - src _(Dossier des fichiers source du développeur)_
 
@@ -16,7 +25,7 @@ A faire :
 - [x] Gestion des Exceptions
 - [x] Gestion des logs
 - [x] Gestion des fichiers
-- [ ] Système d'annotations
+- [x] Système d'annotations (par fichier)
 - [ ] Système de gestion des entités
   - [ ] Sélection
   - [ ] Insertion
