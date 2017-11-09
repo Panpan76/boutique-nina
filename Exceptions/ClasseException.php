@@ -14,6 +14,7 @@ class ClasseException extends Exception{
 
   const FICHIER_INTROUVABLE = 0;
   const CLASSE_ABSENTE      = 1;
+  const METHODE_ABSENTE     = 2;
 
   public function __construct($nomClasse = '', $code = null){
     switch($code){
@@ -26,6 +27,12 @@ class ClasseException extends Exception{
       case self::CLASSE_ABSENTE:
         $titre        = "Classe absente";
         $description  = "Le fichier devant contenir la classe '$nomClasse' a été inclus, mais celle-ci n'y était pas";
+        $code         = 'E';
+        break;
+
+      case self::METHODE_ABSENTE:
+        $titre        = "Méthode absente";
+        $description  = "$nomClasse";
         $code         = 'E';
         break;
     }
