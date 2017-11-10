@@ -55,7 +55,7 @@ class Annotation{
   /**
    * Constructeur de la classe
    */
-  public function __construct(){
+  private function __construct(){
     // TODO Mettre en mémoire les annotations -> fichier
     $this->init(); // Initialise les annotations
   }
