@@ -2,6 +2,7 @@
 
 namespace Gestionnaires;
 
+use \Config;
 use Gestionnaires\Fichier;
 use Annotations\Annotation as AnnotationParser;
 
@@ -54,7 +55,7 @@ class Annotation{
   /**
    * Constructeur de la classe
    */
-  public function __construct(){
+  private function __construct(){
     // TODO Mettre en mémoire les annotations -> fichier
     $this->init(); // Initialise les annotations
   }
@@ -63,7 +64,9 @@ class Annotation{
    * Initiliase les annotations
    */
   private function init(){
-    $this->parseDossier('src/Entites'); // Les entités
+    $emplacements = Config::Emplacements();
+    $this->parseDossier($emplacements['ENTITES']); // Les entités
+    $this->parseDossier($emplacements['CONTROLLEURS']); // Les controlleurs
   }
 
   /**

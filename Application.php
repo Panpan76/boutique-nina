@@ -1,5 +1,8 @@
 <?php
 
+use Gestionnaires\Annotation;
+use Gestionnaires\GestionnaireRequetes;
+
 /**
  * Classe Application
  * Gère l'application
@@ -31,13 +34,16 @@ final class Application{
    * Soumis à un pattern singleton. Initialise les outils dont aura besoin l'application
    */
   private function __construct(){
-    // TODO Annotations
-    // TODO Routes
-
     try{
-      // TODO Traitement de la requête en cours
-    }catch(\Exception $e){
-
+      // Traitement de la requête en cours
+      $gestionnaireRequetes = GestionnaireRequetes::getInstance();
+      $gestionnaireRequetes->traiteRequete();
+    }catch(RequeteException $e){
+      switch($e->getCode()){
+        case RequeteException::AUCUN_ROUTE_TROUVEE: // Si aucune route n'a été trouvée
+          call_user_func_array(array(new \Controlleurs\Controlleur(), 'pageIntrouvable'), array());
+          break;
+      }
     }
   }
 
