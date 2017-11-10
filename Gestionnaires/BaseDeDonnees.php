@@ -2,6 +2,7 @@
 
 namespace Gestionnaires;
 
+use \Config;
 use Gestionnaires\Annotation as Annotation;
 
 use Exceptions\BaseDeDonneesException as BDDException;
@@ -62,12 +63,8 @@ class BaseDeDonnees{
    * Constructeur de la classe
    */
   protected function __construct(){
-    $base['SGBD'] = 'mysql';
-    $base['HOST'] = 'localhost';
-    $base['BASE'] = 'framework_php';
-    $base['USER'] = 'root';
-    $base['PASS'] = '';
-    // TODO Regrouper les identifiants dans un fichier / une classe de config
+    $base = Config::BaseDeDonnees();
+    
     try{
       $this->pdo = new PDO("{$base['SGBD']}:host={$base['HOST']};dbname={$base['BASE']}", "{$base['USER']}", "{$base['PASS']}", array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''));
       $this->base = $base['BASE'];
