@@ -12,9 +12,9 @@
   <p>
     Librairies déjà incluses :
     <ul>
-      <li>Bootstrap (CSS)</li>
-      <li>Bootstrap (JS)</li>
-      <li>JQuery (JS)</li>
+      <li>Bootstrap (CSS) v4.0.0</li>
+      <li>Bootstrap (JS) v4.0.0</li>
+      <li>JQuery (JS) v3.2.1</li>
     </ul>
   </p>
   <hr />
