@@ -1,4 +1,4 @@
-# FrameworkPHP _(0.3.3)_
+# FrameworkPHP _(0.4.2)_
 
 Création, découverte et utilisation d'un framework PHP
 
@@ -33,10 +33,11 @@ A faire :
   - [x] Insertion
   - [x] Modification
   - [x] Suppression
-- [ ] Gestion des requêtes
+- [x] Gestion des requêtes
   - [ ] Redirection
   - [ ] Historique (pour retourner à une page précédente)
-  - [ ] Paramètres (POST/GET)
+  - [x] Paramètres (POST/GET)
+  - [x] Execution d'une requête
 - [ ] Système de formulaires (relative aux annotations des entités)
   - [ ] Génération d'un token unique, qui a statut (validé ou non)
   - [ ] Formulaire d'ajout
