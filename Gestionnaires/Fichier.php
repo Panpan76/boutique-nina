@@ -151,9 +151,6 @@ class Fichier{
    * @return void
    */
   private function verificationDossier($dossier){
-    if(preg_match('/(.*)[\/\\\]/', $dossier, $match)){
-      $dossier = str_replace($this->verificationDossier($match[1]), '', $match[0]);
-    }
     if(!is_dir($dossier)){
       if(!is_file($dossier)){
         if(!mkdir($dossier, 0777, true)){
