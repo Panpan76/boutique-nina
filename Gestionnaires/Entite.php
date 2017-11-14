@@ -2,6 +2,10 @@
 
 namespace Gestionnaires;
 
+use Gestionnaires\BaseDeDonnees as BDD;
+use \PDO;
+
+use Exceptions\EntiteException;
 
 /**
  * Classe Entite
@@ -121,7 +125,7 @@ class Entite{
     $bdd = BDD::getInstance();
     $sql = $bdd->pdo->prepare($requete);
     if($sql->execute()){
-      $resultat = $sql->fetch(PDO::FETCH_ASSOC)[$pk];
+      $resultat = $sql->fetch(PDO::FETCH_ASSOC)[$this->getPK()];
       // Si on a un résultat
       if(!empty($resultat) && $resultat > 0){
         return $this->get($resultat);
@@ -400,8 +404,9 @@ class Entite{
    * @return Entite
    */
   private function appelPostSelect($obj){
+    $annotations = Annotation::getInstance()->getAnnotations('Entites')[$this->entite];
     $methodes = array();
-    foreach(self::$annotations[$this->entite]['methodes'] as $methode => $infos){
+    foreach($annotations['methodes'] as $methode => $infos){
       if(is_array($infos) && isset($infos['postSelect'])){
         $methodes[$infos['postSelect']] = $methode; // Pour ordonner les méthodes
         // NOTE Ne pas avoir 2 valeurs identiques !!! La dernière remplacera les autres sinon
@@ -420,7 +425,8 @@ class Entite{
    * @return string
    */
   public function getPK(){
-    foreach(self::$annotations[$this->entite]['attributs'] as $attribut => $infos){
+    $annotations = Annotation::getInstance()->getAnnotations('Entites')[$this->entite];
+    foreach($annotations['attributs'] as $attribut => $infos){
       if(is_array($infos) && isset($infos['key']) && $infos['key'] == 'PK'){
         return $infos['champ'];
       }
@@ -434,7 +440,8 @@ class Entite{
    * @return string
    */
   private function getAttributByChamp($champ){
-    foreach(self::$annotations[$this->entite]['attributs'] as $attribut => $infos){
+    $annotations = Annotation::getInstance()->getAnnotations('Entites')[$this->entite];
+    foreach($annotations['attributs'] as $attribut => $infos){
       if(is_array($infos) && isset($infos['champ']) && $infos['champ'] == $champ){
         return $attribut;
       }
@@ -448,8 +455,9 @@ class Entite{
    * @return string
    */
   private function getChampByAttribut($attribut){
-    if(isset(self::$annotations[$this->entite]['attributs'][$attribut]) && isset(self::$annotations[$this->entite]['attributs'][$attribut]['champ'])){
-      return self::$annotations[$this->entite]['attributs'][$attribut]['champ'];
+    $annotations = Annotation::getInstance()->getAnnotations('Entites')[$this->entite];
+    if(isset($annotations['attributs'][$attribut]) && isset($annotations['attributs'][$attribut]['champ'])){
+      return $annotations['attributs'][$attribut]['champ'];
     }
     throw new EntiteException("Aucun champ ne correspond à l`attribut '$attribut' pour l`entité '$this->entite'", EntiteException::AUCUN_CHAMP);
   }
@@ -460,8 +468,9 @@ class Entite{
    * @return string
    */
   private function getTable(){
-    if(isset(self::$annotations[$this->entite]['table'])){
-      return self::$annotations[$this->entite]['table'];
+    $annotations = Annotation::getInstance()->getAnnotations('Entites')[$this->entite];
+    if(isset($annotations['table'])){
+      return $annotations['table'];
     }
     throw new EntiteException("Aucune table définie pour l`entité '$this->entite'", EntiteException::AUCUNE_TABLE);
   }
