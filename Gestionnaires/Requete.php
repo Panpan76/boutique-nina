@@ -47,6 +47,8 @@ class Requete{
     $date = new \DateTime(date('Y-m-d H:i:s.'.$micro, $temps)); // On récupère la date avec les microsecondes
     $this->date = $date->setTimeZone(new \DateTimeZone('Europe/Paris')); // On définit le timezone
 
+    $session = Session::getInstance();
+    $session->add('requetes', $this, true);
     self::$requeteCourante = $this;
   }
 
@@ -65,6 +67,34 @@ class Requete{
    */
   public static function getRequeteCourante(){
     return self::$requeteCourante;
+  }
+
+  /**
+   * Retourne les paramètres de la requête
+   *
+   * @return array
+   */
+  public function getParametres(){
+    return $this->parametres;
+  }
+
+  /**
+   * Permet d'ajouter des paramètre à une requête
+   *
+   * @param  string $nom    Clé du paramètre
+   * @param  mixed  $valeur Valeur du paramètre
+   */
+  public function ajoutParametre($nom, $valeur){
+    $this->parametres[$nom] = $valeur;
+  }
+
+  /**
+   * Indique si la requête a été envoyée ou non
+   *
+   * @return boolean
+   */
+  public function estEnvoyee(){
+    return $this->estEnvoyee;
   }
 
   /**
