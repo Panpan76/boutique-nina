@@ -3,6 +3,8 @@
 use Gestionnaires\Annotation;
 use Gestionnaires\GestionnaireRequetes;
 
+use Exceptions\RequeteException;
+
 /**
  * Classe Application
  * Gère l'application
