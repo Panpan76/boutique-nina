@@ -88,7 +88,7 @@ class Entite{
       // On appelle les méthodes devant être appelées juste après la sélection
       $obj = $this->appelPostSelect($obj);
       // On stock l'objet retourné en mémoire et on le retourne
-      return self::$entites[$this->entite][$id] = $obj;
+      return $this->entites[$this->entite][$id] = $obj;
     }
     throw new EntiteException($sql->errorInfo()[2], EntiteException::ERREUR_REQUETE);
   }
@@ -196,8 +196,9 @@ class Entite{
     $obj = new $this->entite();
 
     if(!empty($resultats)){ // Si on a des résultats
+      $annotations = Annotation::getInstance()->getAnnotations('Entites')[$this->entite];
       foreach($resultats as $champ => $valeur){
-        foreach(self::$annotations[$this->entite]['attributs'] as $attribut => $infos){
+        foreach($annotations['attributs'] as $attribut => $infos){
           if(is_array($infos) && isset($infos['champ']) && $infos['champ'] == $champ){
             if($infos['type'] == 'int'){
               $valeur = intval($valeur);
@@ -236,7 +237,9 @@ class Entite{
     $requeteChamps = array();
     $requeteValeurs= array();
     $requeteChampsVal = array();
-    foreach(self::$annotations[get_class($entite)]['attributs'] as $attribut => $infos){
+
+    $annotations = Annotation::getInstance()->getAnnotations('Entites')[$this->entite];
+    foreach($annotations['attributs'] as $attribut => $infos){
       if(is_array($infos) && isset($infos['champ'])){
         $valeur = $entite->$attribut; // On récupère la valeur de l'attribut
 
@@ -284,14 +287,16 @@ class Entite{
         $id = $bdd->pdo->lastInsertId();
         $entite->setId($id);
       }
-      foreach(self::$annotations[get_class($entite)]['attributs'] as $attribut => $infos){
+
+      $annotations = Annotation::getInstance()->getAnnotations('Entites')[$this->entite];
+      foreach($annotations['attributs'] as $attribut => $infos){
         if(is_array($infos) && isset($infos['type']) && preg_match('/^Entites/', $infos['type'])){
           if(is_array($entite->$attribut)){
             $this->setAssociationsByEntite($entite, $entite->$attribut, $infos);
           }
         }
       }
-      return self::$entites[$this->entite][$entite->{$this->getAttributByChamp($this->getPK())}] = $entite;
+      return $this->entites[$this->entite][$entite->{$this->getAttributByChamp($this->getPK())}] = $entite;
     }
     throw new EntiteException($sql->errorInfo()[2]." ($requete)", EntiteException::INSERTION_IMPOSSIBLE);
   }
@@ -310,7 +315,7 @@ class Entite{
 
     if($sql->execute()){
       // On supprime de la mémoire l'entité enregistrée
-      unset(self::$entites[$this->entite][$entite->{$this->getAttributByChamp($this->getPK())}]);
+      unset($this->entites[$this->entite][$entite->{$this->getAttributByChamp($this->getPK())}]);
       unset($entite);
       return true;
     }
@@ -405,6 +410,9 @@ class Entite{
    */
   private function appelPostSelect($obj){
     $annotations = Annotation::getInstance()->getAnnotations('Entites')[$this->entite];
+    if(!isset($annotations['methodes'])){
+      return $obj;
+    }
     $methodes = array();
     foreach($annotations['methodes'] as $methode => $infos){
       if(is_array($infos) && isset($infos['postSelect'])){
@@ -498,8 +506,8 @@ class Entite{
    * @return Entite|false
    */
   private function verifExiste($id){
-    if(isset(self::$entites[$this->entite]) && isset(self::$entites[$this->entite][$id])){
-      return self::$entites[$this->entite][$id];
+    if(isset($this->entites[$this->entite]) && isset($this->entites[$this->entite][$id])){
+      return $this->entites[$this->entite][$id];
     }
     return false;
   }
