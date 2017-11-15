@@ -3,6 +3,7 @@
 namespace Gestionnaires;
 
 use Exceptions\RequeteException;
+use Exceptions\SecuriteException;
 
 use Logguers\RouteLogguer;
 
@@ -162,5 +163,16 @@ class GestionnaireRequetes{
     }
     throw new RequeteException("L`url '{$requete->getUrl()}' ne correspond à aucune route connue", RequeteException::AUCUN_ROUTE_TROUVEE);
   }
+
+
+  public function genereLien($nom){
+    foreach($this->routes as $url => $infos){
+      if(in_array($nom, $infos['nom'])){
+        return \Config::Application()['ADRESSE'].$url;
+      }
+    }
+    throw new Exceptions\RequeteException("La route '{$nom}' ne correspond à aucune route connue", RequeteException::AUCUN_ROUTE_TROUVEE);
+  }
+
 
 }

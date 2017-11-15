@@ -38,7 +38,7 @@ class Controlleur implements ControlleurSecuriteInterface{
 
   /**
    * Même chose que render mais dans les JS/CSS et pages de début/fin (donc pas de titre)
-   * 
+   *
    * @param  string $vue       Fichier à inclure (depuis le dossier des vues)
    * @param  array  $variables Variables utilisées dans cette vue
    */
@@ -52,7 +52,8 @@ class Controlleur implements ControlleurSecuriteInterface{
 
   public function dejaConnecte(){
     // Redirection
-    // TODO Redirection vers l'index
+    // TODO Vérifier existence de la route
+    header('Location: '.genereLien('accueil'));
   }
   public function requiertConnecte($lien = null){
     http_response_code(401);
