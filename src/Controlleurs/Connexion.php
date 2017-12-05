@@ -20,6 +20,7 @@ class Connexion extends Controlleur{
     $form = new Formulaire('Entites\Utilisateur');
 
     $form->retire('nom');
+    $form->retire('Role');
 
 
     if(($entite = $form->getEntite()) != null){

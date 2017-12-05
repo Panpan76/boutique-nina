@@ -6,7 +6,7 @@ namespace Controlleurs;
 class Page extends Controlleur{
 
   /**
-   * @Route('accueil', url="/accueil")
+   * @Route('accueil', url="/")
    */
   public function accueil(){
 

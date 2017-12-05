@@ -8,14 +8,6 @@ use \Config;
 
 class Controlleur implements ControlleurSecuriteInterface{
 
-  /**
-   * @Route('index', url="/")
-   */
-  public function defaut(){
-
-    $this->render('defaut/index.php', 'Accueil');
-  }
-
 
   /**
    * Pour afficher une vue
