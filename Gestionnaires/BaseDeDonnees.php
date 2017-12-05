@@ -64,7 +64,7 @@ class BaseDeDonnees{
    */
   protected function __construct(){
     $base = Config::BaseDeDonnees();
-    
+
     try{
       $this->pdo = new PDO("{$base['SGBD']}:host={$base['HOST']};dbname={$base['BASE']}", "{$base['USER']}", "{$base['PASS']}", array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''));
       $this->base = $base['BASE'];
@@ -152,6 +152,9 @@ class BaseDeDonnees{
           $tableReference = $this->mapping["Entites\\{$match[1]}"]['table'];
           // On crée en parallèle une requête pour les contraintes de clés étrangères
           $alterFK[] = "ADD FOREIGN KEY ({$description['champ']}) REFERENCES {$tableReference}({$description['champ']}) ON DELETE CASCADE ON UPDATE CASCADE";
+        }
+        if(isset($description['type']) && $description['type'] == 'file'){
+          $description['type'] = 'varchar(255)';
         }
         $requeteSub[] = "{$description['champ']} {$description['type']}{$null}{$key}{$special}{$unique}";
       }

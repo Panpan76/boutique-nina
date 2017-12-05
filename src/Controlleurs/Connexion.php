@@ -19,6 +19,8 @@ class Connexion extends Controlleur{
     $erreur = null;
     $form = new Formulaire('Entites\Utilisateur');
 
+    $form->retire('nom');
+
 
     if(($entite = $form->getEntite()) != null){
       // On récupère notre gestionnaire d'entité
@@ -27,7 +29,7 @@ class Connexion extends Controlleur{
       // On essaie
       try{
         // On récupère l'utilisateur dont le nom est donné
-        $utilisateur = $ge->getOneBy(array('nom' => $entite->getNom())); // Possibilité d'exception AUCUN_RESULTAT
+        $utilisateur = $ge->getOneBy(array('login' => $entite->getLogin())); // Possibilité d'exception AUCUN_RESULTAT
         // Si le mot de passe ne corresond pas à celui en base
         if(!$utilisateur->compareMotDePasse($entite->getMotDePasse())){
           // On lance une exception de sécurité (mot de passe incorrect)
@@ -38,8 +40,7 @@ class Connexion extends Controlleur{
         $session->setUtilisateurCourant($utilisateur);
 
         // Redirection
-        // $gr = GR::getInstance();
-        // $gr->redirection('index');
+        header('Location: '.genereLien('accueil'));
 
       }catch(EntiteException $e){
         if($e->getCode() == EntiteException::AUCUN_RESULTAT){
@@ -63,4 +64,15 @@ class Connexion extends Controlleur{
     ));
   }
 
+
+  /**
+   * @Route('deconnexion', url="/deconnexion")
+   * @requiert(Connecté)
+   */
+  public function deconnexion(){
+    $session = Session::getInstance();
+    $session->deconnexion();
+    // Redirection
+    header('Location: '.genereLien('accueil'));
+  }
 }

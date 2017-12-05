@@ -38,7 +38,7 @@ class Requete{
     if(isset($_GET['page'])){
       unset($_GET['page']);
     }
-    $this->parametres = empty($parametres) ? array_merge($_POST, $_GET) : $parametres; // Les données
+    $this->parametres = empty($parametres) ? array_merge($_POST, $_GET, $_FILES) : $parametres; // Les données
     $this->estEnvoyee = ($_SERVER['REQUEST_METHOD'] == 'POST') ? true : false; // Si un formulaire a été envoyé
     $this->pagePrecedente = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $precedent; // La page précédente
 

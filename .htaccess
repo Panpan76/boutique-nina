@@ -9,6 +9,7 @@
   RewriteRule ^.*/(.*\.svg) src/ressources/fonts/$1 [L,NC]
   RewriteRule ^.*/(.*\.png) src/ressources/images/$1 [L,NC]
   RewriteRule ^.*/(.*\.jpeg) src/ressources/images/$1 [L,NC]
+  RewriteRule ^.*/(.*\.jpg) src/ressources/images/$1 [L,NC]
   RewriteRule ^.*/(.*\.gif) src/ressources/images/$1 [L,NC]
   RewriteRule ^web.php$ web.php [L]
   RewriteRule ^(.*)$ web.php?page=$1 [L]

@@ -11,7 +11,7 @@ class Config{
 
   public static function Application(){
     $app['NOM']     = "Projet";
-    $app['ADRESSE'] = 'http://localhost/FrameworkPHP';
+    $app['ADRESSE'] = 'http://localhost/boutique-nina';
 
     return $app;
   }
@@ -21,7 +21,7 @@ class Config{
     $base['HOST'] = 'localhost';
     $base['USER'] = 'root';
     $base['PASS'] = '';
-    $base['BASE'] = 'framework_php';
+    $base['BASE'] = 'boutique_nina';
 
     return $base;
   }
@@ -31,6 +31,7 @@ class Config{
     $css['DOSSIER'] = self::Application()['ADRESSE'].'/src/ressources/css/';
     $css['MIN']     = array(
       'bootstrap'     => 'bootstrap.css',
+      'font-awesome'  => 'font-awesome.css'
     );
 
     return $css;

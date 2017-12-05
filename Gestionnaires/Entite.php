@@ -27,7 +27,7 @@ class Entite{
   /**
    * @var array $entites Les instances des entités déjà instanciées
    */
-  private $entites;
+  private static $entites = array();
 
   /**
    * @var string $entite Entité sélectionnée
@@ -84,11 +84,11 @@ class Entite{
     $sql = $bdd->pdo->prepare($requete);
     if($sql->execute()){
       // On fait appel à la méthode charger qui va créer l'objet et initialiser les valeurs et relations selon les résultats de la requête
-      $obj = $this->charger($sql->fetch(PDO::FETCH_ASSOC));
+      $obj = self::$entites[$this->entite][$id] = $this->charger($sql->fetch(PDO::FETCH_ASSOC));
       // On appelle les méthodes devant être appelées juste après la sélection
       $obj = $this->appelPostSelect($obj);
       // On stock l'objet retourné en mémoire et on le retourne
-      return $this->entites[$this->entite][$id] = $obj;
+      return $obj;
     }
     throw new EntiteException($sql->errorInfo()[2], EntiteException::ERREUR_REQUETE);
   }
@@ -119,7 +119,7 @@ class Entite{
       foreach($order as $attribut => $valeur){
         $listeOrder[] = "{$this->getChampByAttribut($attribut)} $valeur";
       }
-      $requete .= "ORDER BY ".implode(', ', $listeWhere);
+      $requete .= " ORDER BY ".implode(', ', $listeOrder);
     }
 
     $bdd = BDD::getInstance();
@@ -145,10 +145,6 @@ class Entite{
    * @return Entite
    */
   public function getAllBy($where = array(), $order = array()){
-    if(!is_array($where)){
-      throw new EntiteException('Tableau attendu', EntiteException::PARAMETRE_INCORRECT);
-    }
-
     $requete = "SELECT {$this->getPK()} FROM {$this->getTable()} ";
 
     if(!empty($where)){
@@ -173,7 +169,7 @@ class Entite{
       $resultats = array();
       // On récupère toutes les correspondances
       while($resultat = $sql->fetch(PDO::FETCH_ASSOC)){
-        $resultats[] = $this->get($resultat[$pk]);
+        $resultats[] = $this->get($resultat[$this->getPK()]);
       }
       if(!empty($resultats) && $resultats > 0){
         return $resultats;
@@ -296,7 +292,7 @@ class Entite{
           }
         }
       }
-      return $this->entites[$this->entite][$entite->{$this->getAttributByChamp($this->getPK())}] = $entite;
+      return self::$entites[$this->entite][$entite->{$this->getAttributByChamp($this->getPK())}] = $entite;
     }
     throw new EntiteException($sql->errorInfo()[2]." ($requete)", EntiteException::INSERTION_IMPOSSIBLE);
   }
@@ -315,7 +311,7 @@ class Entite{
 
     if($sql->execute()){
       // On supprime de la mémoire l'entité enregistrée
-      unset($this->entites[$this->entite][$entite->{$this->getAttributByChamp($this->getPK())}]);
+      unset(self::$entites[$this->entite][$entite->{$this->getAttributByChamp($this->getPK())}]);
       unset($entite);
       return true;
     }
@@ -506,8 +502,8 @@ class Entite{
    * @return Entite|false
    */
   private function verifExiste($id){
-    if(isset($this->entites[$this->entite]) && isset($this->entites[$this->entite][$id])){
-      return $this->entites[$this->entite][$id];
+    if(isset(self::$entites[$this->entite]) && isset(self::$entites[$this->entite][$id])){
+      return self::$entites[$this->entite][$id];
     }
     return false;
   }

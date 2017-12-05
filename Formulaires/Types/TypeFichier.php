@@ -2,7 +2,7 @@
 
 namespace Formulaires\Types;
 
-class TypeNombre extends Type{
+class TypeFichier extends Type{
   private $nom;
   private $name;
   private $valeur;
@@ -19,7 +19,7 @@ class TypeNombre extends Type{
     $valeur = is_null($this->valeur) ? '' : $this->valeur;
     return "<div class='input-group'>
               <span class='input-group-addon'>{$this->nom}</span>
-              <input type='number' class='form-control' step='0.01' placeholder='{$this->nom}' aria-label='{$this->nom}' name='{$this->name}' value='{$valeur}'/>
+              <input type='file' class='form-control' placeholder='{$this->nom}' aria-label='{$this->nom}' name='{$this->name}' value=''/>
             </div>";
   }
 }

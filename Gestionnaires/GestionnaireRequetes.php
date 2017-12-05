@@ -2,10 +2,10 @@
 
 namespace Gestionnaires;
 
-use Exceptions\RequeteException;
-use Exceptions\SecuriteException;
+use \Exceptions\RequeteException;
+use \Exceptions\SecuriteException;
 
-use Logguers\RouteLogguer;
+use \Logguers\RouteLogguer;
 
 /**
  * Classe Requete
@@ -171,7 +171,7 @@ class GestionnaireRequetes{
         return \Config::Application()['ADRESSE'].$url;
       }
     }
-    throw new Exceptions\RequeteException("La route '{$nom}' ne correspond à aucune route connue", RequeteException::AUCUN_ROUTE_TROUVEE);
+    throw new RequeteException("La route '{$nom}' ne correspond à aucune route connue", RequeteException::AUCUN_ROUTE_TROUVEE);
   }
 
 

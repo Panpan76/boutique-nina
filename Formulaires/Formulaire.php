@@ -5,6 +5,7 @@ namespace Formulaires;
 use Formulaires\Types\Type;
 use Formulaires\Types\TypeNombre;
 use Formulaires\Types\TypeTexte;
+use Formulaires\Types\TypeFichier;
 use Formulaires\Types\TypeTextarea;
 use Formulaires\Types\TypeMotDePasse;
 use Formulaires\Types\TypeToken;
@@ -30,7 +31,7 @@ class Formulaire{
   private $elements = array();
   private $boutons;
 
-  public function __construct($entite){
+  public function __construct($entite, $prefixe = ''){
     $this->entite = $entite;
     // On récupères les annotations
     $parser = Annotation::getInstance();
@@ -54,11 +55,16 @@ class Formulaire{
       }
       if(isset($infos['champ'])){
         if(isset($parametres[Type::formatNom($infos['champ'])])){
-          $param = $parametres[Type::formatNom($infos['champ'])];
+          $param = $parametres[$prefixe.Type::formatNom($infos['champ'])];
         }
         preg_match('/^([^\(\\\]*)\(?.*\)?/', $infos['type'], $type);
         switch($type[1]){
           case 'int':
+            $form = new TypeNombre($infos['champ'], $param);
+            $this->elements[$attribut] = $form->getHTML();
+            break;
+
+          case 'float':
             $form = new TypeNombre($infos['champ'], $param);
             $this->elements[$attribut] = $form->getHTML();
             break;
@@ -71,6 +77,19 @@ class Formulaire{
           case 'text':
             $form = new TypeTextarea($infos['champ'], $param);
             $this->elements[$attribut] = $form->getHTML();
+            break;
+
+          case 'file':
+            $form = new TypeFichier($infos['champ'], $param);
+            $this->elements[$attribut] = $form->getHTML();
+            break;
+
+          default:
+            if(preg_match('/Entites\\\(.*)/', $infos['type'], $precision)){
+              $newPrefixe = Type::formatNom(ucfirst(str_replace('_', ' ', $precision[1]))).'/';
+              $form = new Formulaire($infos['type'], $newPrefixe);
+              $this->elements[$precision[1]][$attribut] = $form->getFormulaireSansForm();
+            }
             break;
         }
       }
@@ -86,15 +105,13 @@ class Formulaire{
   }
 
   public function getFormulaire(){
-    $str = "<form action='' method='post'>";
+    $str = "<form action='' method='post' enctype='multipart/form-data'>";
     if(!is_null($this->erreur)){
       $str .= "<div class='alert alert-danger' role='alert'>
                 {$this->erreur}
               </div>";
     }
-    foreach($this->elements as $nom => $html){
-      $str .= $html;
-    }
+    $str .= $this->getFormulaireSansForm();
 
     $token = new Token();
     $form = new TypeToken($token->getValeur());
@@ -106,10 +123,33 @@ class Formulaire{
     return $str;
   }
 
-  public function retire($attribut){
-    if(!preg_match('/^\$/', $attribut)){
-      $attribut = "$$attribut";
+  public function getFormulaireSansForm(){
+    $str = '';
+    foreach($this->elements as $nom => $html){
+      if(is_array($html)){
+        $str .= "<div class='row'>
+                  <div class='col-md-11 ml-md-auto'>
+                    <h3>$nom</h3>
+                  </div>
+                </div>
+                <div class='row'>
+                  <div class='col-md-11 ml-md-auto'>";
+                  $nom = Type::formatNom(ucfirst(str_replace('_', ' ', $nom)));
+        foreach($html as $subNom => $subHtml){
+          $subHtml = preg_replace("/name='(.*)'/", "name='$nom/$1'", $subHtml);
+          $str .= $subHtml;
+        }
+        $str .= "</div>
+                </div>";
+      }
+      else{
+        $str .= $html;
+      }
     }
+    return $str;
+  }
+
+  public function retire($attribut){
     if(!isset($this->elements[$attribut])){
       throw new FormulaireException("L`attribut '{$attribut}' est inconnu pour le formulaire de l`entité '{$this->entite}'", FormulaireException::ATTRIBUT_INCONNU);
     }
@@ -163,37 +203,62 @@ class Formulaire{
       if($donnees['valide'] == 'false'){
         return false;
       }
-      // On récupères les annotations
-      $parser = Annotation::getInstance();
-      $annots = $parser->getAnnotations();
-      if(!isset($annots[$this->entite])){
-        throw new FormulaireException("Aucune annotations pour l`entité '$this->entite'", FormulaireException::AUCUNE_ANNOTATION);
-      }
-      $annotations = $annots[$this->entite];
 
       $entite = new $this->entite();
 
-      foreach($annotations['attributs'] as $attribut => $infos){
-        $setter = "Set".ucfirst(str_replace('$', '', $attribut));
-        if(isset($infos['champ'])){
-          $nom = str_replace('_', ' ', $infos['champ']);
-          $nom = ucfirst($nom);
-          $nom = Type::formatNom($nom);
-          if(isset($donnees[$nom])){
-            $entite->$setter($donnees[$nom]);
-          }
-        }
-        if(isset($infos['crypt'])){
-          $nom = str_replace('_', ' ', 'Mot de passe');
-          $nom = ucfirst($nom);
-          $nom = Type::formatNom($nom);
-          if(isset($donnees[$nom])){
-            $entite->$setter($donnees[$nom]);
-          }
-        }
-      }
+      $this->initEntite($entite, $donnees);
       return $entite;
     }
     return null;
+  }
+
+  private function initEntite($entite, $donnees){
+    // On récupère les annotations
+    $parser = Annotation::getInstance();
+    $annots = $parser->getAnnotations();
+    if(!isset($annots[$this->entite])){
+      throw new FormulaireException("Aucune annotations pour l`entité '$this->entite'", FormulaireException::AUCUNE_ANNOTATION);
+    }
+    $annotations = $annots[get_class($entite)];
+
+    foreach($annotations['attributs'] as $attribut => $infos){
+      $setter = "Set".ucfirst(str_replace('$', '', $attribut));
+      if(isset($infos['champ'])){
+        $nom = str_replace('_', ' ', $infos['champ']);
+        $nom = ucfirst($nom);
+        $nom = Type::formatNom($nom);
+
+        if(preg_match('/Entites/', $infos['type'])){
+          if(!isset($donnees[$nom])){
+            $donnees[$nom] = new $infos['type'];
+            $donneesTmp = array();
+            $nomType = Type::formatNom(ucfirst(str_replace('_', ' ', explode('\\', $infos['type'])[1])));
+            foreach($donnees as $nomDonnee => $valeur){
+              if(preg_match("/$nomType\/(.*)/", $nomDonnee, $nomChamp)){
+                $donneesTmp[$nomChamp[1]] = $valeur;
+              }
+            }
+            $this->initEntite($donnees[$nom], $donneesTmp);
+          }
+        }
+
+        if(isset($donnees[$nom])){
+          $entite->$setter($donnees[$nom]);
+        }
+      }
+      if(isset($infos['crypt'])){
+        $nom = str_replace('_', ' ', 'Mot de passe');
+        $nom = ucfirst($nom);
+        $nom = Type::formatNom($nom);
+        if(isset($donnees[$nom])){
+          $entite->$setter($donnees[$nom]);
+        }
+      }
+      if(isset($infos['type']) && $infos['type'] == 'file' && isset($infos['destination'])){
+        $fichier = $infos['destination'].'/'.$donnees[$nom]['name'];
+        move_uploaded_file($donnees[$nom]['tmp_name'], $fichier);
+        $entite->$setter($fichier);
+      }
+    }
   }
 }

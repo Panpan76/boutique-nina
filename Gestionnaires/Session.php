@@ -11,7 +11,7 @@ namespace Gestionnaires;
  * @date 10/11/2017
  */
 class Session{
-  const CLE = "FrameworkPHP"; // Une clé unique pour éviter que la session de cette application ne soit utilisée sur une autre application du serveur
+  const CLE = "BoutiqueNina"; // Une clé unique pour éviter que la session de cette application ne soit utilisée sur une autre application du serveur
 
   private $session; // La session
 
