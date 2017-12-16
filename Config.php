@@ -20,7 +20,7 @@ class Config{
     $base['SGBD'] = 'mysql';
     $base['HOST'] = 'localhost';
     $base['USER'] = 'root';
-    $base['PASS'] = '';
+    $base['PASS'] = 'p@np@n761401';
     $base['BASE'] = 'boutique_nina';
 
     return $base;
