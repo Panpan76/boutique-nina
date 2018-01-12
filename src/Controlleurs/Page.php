@@ -19,7 +19,7 @@ class Page extends Controlleur{
    */
   public function informations(){
 
-    $this->render('pages/index.php', 'Accueil', array(
+    $this->render('pages/infos.php', 'Qui sommes-nous ?', array(
     ));
   }
 
