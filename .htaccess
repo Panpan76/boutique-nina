@@ -3,5 +3,14 @@ RewriteEngine On
 RewriteCond %{REQUEST_URI} ^.*\.css
 RewriteRule ^(.*)$ src/ressources/css/$1 [END]
 
+RewriteCond %{REQUEST_URI} ^.*\.js
+RewriteRule ^(.*)$ src/ressources/javascript/$1 [END]
+
+RewriteCond %{REQUEST_URI} ^.*\.(jpg|jpeg|png|gif)
+RewriteRule ^(.*)$ src/ressources/images/$1 [END]
+
+RewriteCond %{REQUEST_URI} ^.*\.(eot|svg|ttf|woff|woff2|otf)
+RewriteRule ^(.*)$ src/ressources/fonts/$1 [END]
+
 RewriteRule ^web.php$ web.php [L]
 RewriteRule ^(.*)$ web.php?page=$1 [L]
