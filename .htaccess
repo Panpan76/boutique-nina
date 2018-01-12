@@ -1,7 +1,7 @@
 RewriteEngine On
 
 RewriteCond %{REQUEST_URI} ^.*\.css
-RewriteRule ^.*/([^/]*)$ src/ressources/css/$1 [END]
+RewriteRule ^(.*)$ src/ressources/css/$1 [END]
 
 RewriteRule ^web.php$ web.php [L]
 RewriteRule ^(.*)$ web.php?page=$1 [L]
