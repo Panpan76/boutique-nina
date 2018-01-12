@@ -1,16 +1,7 @@
-<IfModule mod_rewrite.c>
-  RewriteEngine On
+RewriteEngine On
 
-  RewriteRule ^.*/(.*\.css) src/ressources/css/$1 [L,NC]
-  RewriteRule ^.*/(.*\.js) src/ressources/javascript/$1 [L,NC]
-  RewriteRule ^.*/(.*\.eot) src/ressources/fonts/$1 [L,NC]
-  RewriteRule ^.*/(.*\.woff) src/ressources/fonts/$1 [L,NC]
-  RewriteRule ^.*/(.*\.ttf) src/ressources/fonts/$1 [L,NC]
-  RewriteRule ^.*/(.*\.svg) src/ressources/fonts/$1 [L,NC]
-  RewriteRule ^.*/(.*\.png) src/ressources/images/$1 [L,NC]
-  RewriteRule ^.*/(.*\.jpeg) src/ressources/images/$1 [L,NC]
-  RewriteRule ^.*/(.*\.jpg) src/ressources/images/$1 [L,NC]
-  RewriteRule ^.*/(.*\.gif) src/ressources/images/$1 [L,NC]
-  RewriteRule ^web.php$ web.php [L]
-  RewriteRule ^(.*)$ web.php?page=$1 [L]
-</IfModule>
+RewriteCond %{REQUEST_URI} ^.*\.css
+RewriteRule ^.*/([^/]*)$ boutique-nina/src/ressource/css/$1 [END]
+
+RewriteRule ^web.php$ web.php [L]
+RewriteRule ^(.*)$ web.php?page=$1 [L]
