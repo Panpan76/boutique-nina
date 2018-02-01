@@ -3,7 +3,7 @@ $nomEntete = \Config::Application()['NOM'];
 ?>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="collapse navbar-collapse">
+  <div class="navbar-collapse">
     <a class="nav-link clickable" href="<?= genereLien('accueil'); ?>"><h4><span class="fa fa-home" aria-hidden="true"></span> <?= $nomEntete ?></h4></a>
     <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
     </ul>
